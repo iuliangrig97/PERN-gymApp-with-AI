@@ -2,6 +2,7 @@ import { RedirectToSignIn, SignedIn } from "@neondatabase/neon-js/auth/react";
 import { useAuth } from "../context/AuthContext";
 import { Select } from "../components/ui/Select";
 import { useState } from "react";
+import type { UserProfile } from "../types";
 
 const goalOptions = [
   { value: "bulk", label: "Build Muscle (Bulk)" },
@@ -41,7 +42,7 @@ const bodyOptions = [
 ];
 
 export default function Onboarding() {
-  const { user } = useAuth();
+  const { user, saveProfile } = useAuth();
   const [formData, setFormData] = useState({
     goal: "bulk",
     experience: "intermediate",
@@ -51,6 +52,8 @@ export default function Onboarding() {
     body: "fullBody",
     injuries: "",
   });
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState("");
 
   function updateForm(field: string, value: string) {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -58,6 +61,24 @@ export default function Onboarding() {
 
   async function handleQuestions(e: React.SubmitEvent) {
     e.preventDefault();
+
+    const profile: Omit<UserProfile, "userId" | "updatedAt"> = {
+      goal: formData.goal as UserProfile["goal"],
+      experience: formData.experience as UserProfile["experience"],
+      days: parseInt(formData.days),
+      time: parseInt(formData.time),
+      equipment: formData.equipment as UserProfile["equipment"],
+      body: formData.body as UserProfile["body"],
+      injuries: formData.injuries || undefined,
+    };
+    try {
+      await saveProfile(profile);
+      setIsGenerating(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save profile");
+    } finally {
+      setIsGenerating(false);
+    }
   }
 
   if (!user) {
@@ -68,81 +89,88 @@ export default function Onboarding() {
     <SignedIn>
       <div className="min-h-screen pt-24 pb-12 px-6">
         <div className="max-w-xl mx-auto">
-          <div className="border-2 rounded-2xl bg-gray-900 flex flex-col items-start justify-center px-8 py-3 gap-2">
-            <h1 className="text-3xl font-bold">About what you need</h1>
-            <p className="text-gray-400 mb-5">
-              Help us create your own custom plan!
-            </p>
-            <form
-              onSubmit={handleQuestions}
-              className="w-full flex flex-col gap-5"
-            >
-              <Select
-                id="goal"
-                label="What's your goal?"
-                options={goalOptions}
-                value={formData.goal}
-                onChange={(e) => updateForm("goal", e.target.value)}
-              />
-              <Select
-                id="experience"
-                label="What's your experience?"
-                options={experienceOptions}
-                value={formData.experience}
-                onChange={(e) => updateForm("experience", e.target.value)}
-              />
-              <div className="grid grid-cols-2 gap-4">
+          {!isGenerating ? (
+            <div className="border-2 rounded-2xl bg-gray-900 flex flex-col items-start justify-center px-8 py-3 gap-2">
+              <h1 className="text-3xl font-bold">About what you need</h1>
+              <p className="text-gray-400 mb-5">
+                Help us create your own custom plan!
+              </p>
+              <form
+                onSubmit={handleQuestions}
+                className="w-full flex flex-col gap-5"
+              >
                 <Select
-                  id="days"
-                  label="How many days per week?"
-                  options={daysOptions}
-                  value={formData.days}
-                  onChange={(e) => updateForm("days", e.target.value)}
+                  id="goal"
+                  label="What's your goal?"
+                  options={goalOptions}
+                  value={formData.goal}
+                  onChange={(e) => updateForm("goal", e.target.value)}
                 />
                 <Select
-                  id="time"
-                  label="How much time per day?"
-                  options={timeOptions}
-                  value={formData.time}
-                  onChange={(e) => updateForm("time", e.target.value)}
+                  id="experience"
+                  label="What's your experience?"
+                  options={experienceOptions}
+                  value={formData.experience}
+                  onChange={(e) => updateForm("experience", e.target.value)}
                 />
-              </div>
-              <Select
-                id="equipment"
-                label="Gym or home?"
-                options={equipmentOptions}
-                value={formData.equipment}
-                onChange={(e) => updateForm("equipment", e.target.value)}
-              />
-              <Select
-                id="body"
-                label="What to train?"
-                options={bodyOptions}
-                value={formData.body}
-                onChange={(e) => updateForm("body", e.target.value)}
-              />
-              <div className="border-2 rounded-2xl py-2 px-4 ">
-                <p>Any injuries? (optional)</p>
-                <textarea
-                  id="injuries"
-                  placeholder="Lower back issues, shoulders, arms etc.."
-                  rows={2}
-                  value={formData.injuries}
-                  onChange={(e) => updateForm("injuries", e.target.value)}
-                  className="w-full mt-1"
+                <div className="grid grid-cols-2 gap-4">
+                  <Select
+                    id="days"
+                    label="How many days per week?"
+                    options={daysOptions}
+                    value={formData.days}
+                    onChange={(e) => updateForm("days", e.target.value)}
+                  />
+                  <Select
+                    id="time"
+                    label="How much time per day?"
+                    options={timeOptions}
+                    value={formData.time}
+                    onChange={(e) => updateForm("time", e.target.value)}
+                  />
+                </div>
+                <Select
+                  id="equipment"
+                  label="Gym or home?"
+                  options={equipmentOptions}
+                  value={formData.equipment}
+                  onChange={(e) => updateForm("equipment", e.target.value)}
                 />
-              </div>
+                <Select
+                  id="body"
+                  label="What to train?"
+                  options={bodyOptions}
+                  value={formData.body}
+                  onChange={(e) => updateForm("body", e.target.value)}
+                />
+                <div className="border-2 rounded-2xl py-2 px-4 ">
+                  <p>Any injuries? (optional)</p>
+                  <textarea
+                    id="injuries"
+                    placeholder="Lower back issues, shoulders, arms etc.."
+                    rows={2}
+                    value={formData.injuries}
+                    onChange={(e) => updateForm("injuries", e.target.value)}
+                    className="w-full mt-1"
+                  />
+                </div>
 
-              <div>
-                <button
-                  type="submit"
-                  className="bg-yellow-400 text-black font-bold hover:bg-blue-400 p-3 w-full my-2"
-                >
-                  Generate my plan
-                </button>
-              </div>
-            </form>
-          </div>
+                <div>
+                  <button
+                    type="submit"
+                    className="bg-yellow-400 text-black font-bold hover:bg-blue-400 p-3 w-full my-2"
+                  >
+                    Generate my plan
+                  </button>
+                </div>
+              </form>
+            </div>
+          ) : (
+            <div className="border-2 rounded-2xl bg-gray-950 py-16 flex justify-center font-bold gap-2">
+              <h1>Loading...</h1>
+              <p className="animate-spin ">⭕</p>
+            </div>
+          )}
         </div>
       </div>
       ;
