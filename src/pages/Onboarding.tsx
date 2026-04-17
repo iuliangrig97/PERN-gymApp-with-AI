@@ -1,0 +1,151 @@
+import { RedirectToSignIn, SignedIn } from "@neondatabase/neon-js/auth/react";
+import { useAuth } from "../context/AuthContext";
+import { Select } from "../components/ui/Select";
+import { useState } from "react";
+
+const goalOptions = [
+  { value: "bulk", label: "Build Muscle (Bulk)" },
+  { value: "cut", label: "Lose Fat (cut)" },
+  { value: "Strength", label: "Build Strength" },
+  { value: "Endurance", label: "Improve Endurance" },
+];
+
+const experienceOptions = [
+  { value: "beginner", label: "Beginner (0-1 years)" },
+  { value: "intermediate", label: "Intermediate (1-3 years)" },
+  { value: "advanced", label: "Advanced (3+ years)" },
+];
+
+const daysOptions = [
+  { value: "2", label: "2 days per week" },
+  { value: "3", label: "3 days per week" },
+  { value: "5", label: "5 days per week" },
+];
+
+const timeOptions = [
+  { value: "30", label: "30 minutes" },
+  { value: "60", label: "60 minutes" },
+  { value: "90", label: "90 minutes" },
+];
+
+const equipmentOptions = [
+  { value: "fullGym", label: "Full Gym Access" },
+  { value: "home", label: "Home Gym" },
+];
+
+const bodyOptions = [
+  { value: "fullBody", label: "Full Body" },
+  { value: "upperBody", label: "Upper Body" },
+  { value: "lowerBody", label: "Lower Body" },
+  { value: "custom", label: "Custom AI Plan" },
+];
+
+export default function Onboarding() {
+  const { user } = useAuth();
+  const [formData, setFormData] = useState({
+    goal: "bulk",
+    experience: "intermediate",
+    days: "5",
+    time: "30",
+    equipment: "home",
+    body: "fullBody",
+    injuries: "",
+  });
+
+  function updateForm(field: string, value: string) {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  }
+
+  async function handleQuestions(e: React.SubmitEvent) {
+    e.preventDefault();
+  }
+
+  if (!user) {
+    return <RedirectToSignIn />;
+  }
+
+  return (
+    <SignedIn>
+      <div className="min-h-screen pt-24 pb-12 px-6">
+        <div className="max-w-xl mx-auto">
+          <div className="border-2 rounded-2xl bg-gray-900 flex flex-col items-start justify-center px-8 py-3 gap-2">
+            <h1 className="text-3xl font-bold">About what you need</h1>
+            <p className="text-gray-400 mb-5">
+              Help us create your own custom plan!
+            </p>
+            <form
+              onSubmit={handleQuestions}
+              className="w-full flex flex-col gap-5"
+            >
+              <Select
+                id="goal"
+                label="What's your goal?"
+                options={goalOptions}
+                value={formData.goal}
+                onChange={(e) => updateForm("goal", e.target.value)}
+              />
+              <Select
+                id="experience"
+                label="What's your experience?"
+                options={experienceOptions}
+                value={formData.experience}
+                onChange={(e) => updateForm("experience", e.target.value)}
+              />
+              <div className="grid grid-cols-2 gap-4">
+                <Select
+                  id="days"
+                  label="How many days per week?"
+                  options={daysOptions}
+                  value={formData.days}
+                  onChange={(e) => updateForm("days", e.target.value)}
+                />
+                <Select
+                  id="time"
+                  label="How much time per day?"
+                  options={timeOptions}
+                  value={formData.time}
+                  onChange={(e) => updateForm("time", e.target.value)}
+                />
+              </div>
+              <Select
+                id="equipment"
+                label="Gym or home?"
+                options={equipmentOptions}
+                value={formData.equipment}
+                onChange={(e) => updateForm("equipment", e.target.value)}
+              />
+              <Select
+                id="body"
+                label="What to train?"
+                options={bodyOptions}
+                value={formData.body}
+                onChange={(e) => updateForm("body", e.target.value)}
+              />
+              <div className="border-2 rounded-2xl py-2 px-4 ">
+                <p>Any injuries? (optional)</p>
+                <textarea
+                  id="injuries"
+                  placeholder="Lower back issues, shoulders, arms etc.."
+                  rows={2}
+                  value={formData.injuries}
+                  onChange={(e) => updateForm("injuries", e.target.value)}
+                  className="w-full mt-1"
+                />
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  className="bg-yellow-400 text-black font-bold hover:bg-blue-400 p-3 w-full my-2"
+                >
+                  Generate my plan
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      ;
+    </SignedIn>
+  );
+}
