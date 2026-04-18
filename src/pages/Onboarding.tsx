@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { Select } from "../components/ui/Select";
 import { useState } from "react";
 import type { UserProfile } from "../types";
+import { useNavigate } from "react-router-dom";
 
 const goalOptions = [
   { value: "bulk", label: "Build Muscle (Bulk)" },
@@ -42,7 +43,7 @@ const bodyOptions = [
 ];
 
 export default function Onboarding() {
-  const { user, saveProfile } = useAuth();
+  const { user, saveProfile, generatePlan } = useAuth();
   const [formData, setFormData] = useState({
     goal: "bulk",
     experience: "intermediate",
@@ -54,6 +55,7 @@ export default function Onboarding() {
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate()
 
   function updateForm(field: string, value: string) {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -74,6 +76,8 @@ export default function Onboarding() {
     try {
       await saveProfile(profile);
       setIsGenerating(true);
+      await generatePlan();
+      navigate("/profile");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save profile");
     } finally {
