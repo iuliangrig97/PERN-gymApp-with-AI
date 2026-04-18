@@ -1,5 +1,6 @@
 import { Router, type Request, type Response } from "express";
 import { prisma } from "../lib/prisma";
+import { generateTrainingPlan } from "../lib/ai";
 
 export const planRouter = Router();
 
@@ -8,7 +9,7 @@ planRouter.post('/generate', async (req: Request, res: Response) => {
         const { userId } = req.body
 
         if (!userId) {
-            res.status(400).json({ error: "User ID is required" })
+            return res.status(400).json({ error: "User ID is required" })
         }
 
         const profile = await prisma.user_Profiles.findUnique({
@@ -28,6 +29,13 @@ planRouter.post('/generate', async (req: Request, res: Response) => {
         const nextVersion = latestPlan ? latestPlan.version + 1 : 1;
 
         let planJson;
+
+        try {
+            planJson = await generateTrainingPlan(profile)
+        } catch (err) {
+            console.error("AI generation failed: ", err)
+            return res.status(500).json({ error: "Failed to generate training plan. Please try again,", details: err instanceof Error ? err.message : "Unknown error" })
+        }
 
         const planText = JSON.stringify(planJson, null, 2);
 
