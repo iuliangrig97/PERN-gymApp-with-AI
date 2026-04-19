@@ -41,7 +41,6 @@ app.use("/api/plan", planRouter);
 
 
 
-
 app.listen(PORT, () => {
     console.log(`Server running on port: ${PORT}`)
 })
