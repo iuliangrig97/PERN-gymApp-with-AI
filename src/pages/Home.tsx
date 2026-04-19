@@ -53,7 +53,7 @@ export default function Home() {
       <main className="pt-24 shadow-2xl shadow-blue-900/10">
         <section className="relative overflow-hidden bg-gray-950 pb-20 pt-16 md:pb-32 md:pt-24">
           <div className="absolute inset-0 opacity-10 blur-[100px] saturate-150">
-            <div className="absolute -top-10 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-blue-600"></div>
+            <div className="absolute -top-10 left-1/2 h-125 w-125 -translate-x-1/2 rounded-full bg-blue-600"></div>
           </div>
 
           <div className="relative max-w-7xl mx-auto px-6 text-center z-10">
