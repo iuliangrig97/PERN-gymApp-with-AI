@@ -4,9 +4,12 @@ import { useParams } from "react-router-dom";
 export default function Auth() {
   const { pathname } = useParams();
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="max-w-md w-full">
-        <AuthView pathname={pathname} />
+    <div className="min-h-screen flex items-center">
+      <div className="w-full flex justify-center ">
+        <AuthView
+          pathname={pathname}
+          className=" bg-gray-950"
+        />
       </div>
     </div>
   );

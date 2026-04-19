@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from './pages//Home';
+import Home from "./pages//Home";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import Auth from "./pages/Auth";
@@ -14,18 +14,16 @@ function App() {
     <NeonAuthUIProvider authClient={authClient} defaultTheme="dark">
       <AuthProvider>
         <BrowserRouter>
-          <div className="min-h-screen flex flex-col">
-            <Navbar />
-            <main className="flex-1">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/onboarding" element={<Onboarding />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/auth/:pathname" element={<Auth />} />
-                <Route path="/account/:pathname" element={<Account />} />
-              </Routes>
-            </main>
-          </div>
+          <Navbar />
+          <main className="bg-gray-950">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/auth/:pathname" element={<Auth />} />
+              <Route path="/account/:pathname" element={<Account />} />
+            </Routes>
+          </main>
         </BrowserRouter>
       </AuthProvider>
     </NeonAuthUIProvider>
