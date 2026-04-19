@@ -11,7 +11,7 @@ export async function generateTrainingPlan(profile: UserProfile | Record<string,
         days: profile.days || 5,
         time: profile.time || 30,
         equipment: profile.equipment || "home",
-        body: profile.body || "full_body",
+        body: profile.body || "fullBody",
         injuries: profile.injuries || null,
     }
 
@@ -34,7 +34,7 @@ export async function generateTrainingPlan(profile: UserProfile | Record<string,
 
     try {
         const completion = await openai.chat.completions.create({
-            model: "nvidia/llama-nemotron-embed-vl-1b-v2:free",
+            model: "nvidia/nemotron-3-super-120b-a12b:free",
             messages: [
                 {
                     role: "system",
@@ -46,7 +46,6 @@ export async function generateTrainingPlan(profile: UserProfile | Record<string,
                 },
             ],
             temperature: 0.5,
-            response_format: { type: "json_object" },
         })
 
         const content = completion.choices[0].message.content;
@@ -57,7 +56,9 @@ export async function generateTrainingPlan(profile: UserProfile | Record<string,
             throw new Error("No content in AI response")
         }
 
-        const planData = JSON.parse(content)
+        const cleanJson = content.replace(/```json/g, "").replace(/```/g, "").trim()
+
+        const planData = JSON.parse(cleanJson)
 
         return formatPlanResponse(planData, normalizedProfile);
 

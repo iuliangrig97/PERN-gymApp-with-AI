@@ -55,7 +55,7 @@ export default function Onboarding() {
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   function updateForm(field: string, value: string) {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -94,9 +94,11 @@ export default function Onboarding() {
       <div className="min-h-screen pt-24 pb-12 px-6">
         <div className="max-w-xl mx-auto">
           {!isGenerating ? (
-            <div className="border-2 rounded-2xl bg-gray-900 flex flex-col items-start justify-center px-8 py-3 gap-2">
-              <h1 className="text-3xl font-bold">About what you need</h1>
-              <p className="text-gray-400 mb-5">
+            <div className="border-2 rounded-2xl bg-gray-900 flex flex-col justify-center px-8 py-3 gap-2">
+              <h1 className="text-3xl font-bold text-center">
+                Create your plan
+              </h1>
+              <p className="text-gray-400 mb-5 text-center">
                 Help us create your own custom plan!
               </p>
               <form
@@ -170,9 +172,13 @@ export default function Onboarding() {
               </form>
             </div>
           ) : (
-            <div className="border-2 rounded-2xl bg-gray-950 py-16 flex justify-center font-bold gap-2">
-              <h1>Loading...</h1>
-              <p className="animate-spin ">⭕</p>
+            <div className="border-2 rounded-2xl bg-gray-950 py-16 flex  font-bold gap-2 flex-col items-center">
+              <h1 className="md:text-lg">
+                Loading... <span className="animate-spin ">⭕</span>
+              </h1>
+              <p className="text-center w-[75%] my-4">
+                Free AI api is slow and can get an error for some reason
+              </p>
             </div>
           )}
         </div>
