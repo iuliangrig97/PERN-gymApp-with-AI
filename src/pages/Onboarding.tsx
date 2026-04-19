@@ -54,6 +54,7 @@ export default function Onboarding() {
     injuries: "",
   });
   const [isGenerating, setIsGenerating] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -177,16 +178,12 @@ export default function Onboarding() {
                 Loading... <span className="animate-spin ">⭕</span>
               </h1>
               <p className="text-center w-[75%] my-4">
-                Free AI api is slow and can get an error for some reason
+                Free AI api is slow and can get a random error for some reason
               </p>
             </div>
           )}
         </div>
-        <div>
-          <p className="text-red-600">{error ? error : "Error"}</p>
-        </div>
       </div>
-      ;
     </SignedIn>
   );
 }
