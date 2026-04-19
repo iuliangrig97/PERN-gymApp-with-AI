@@ -26,9 +26,7 @@ const generalLimiter = rateLimit({
 
 
 app.use(cors({
-    origin: ["http://localhost:5173",
-        process.env.BASE_URL
-    ],
+    origin: "http://localhost:5173",
     methods: "GET, POST, PUT, PATCH, DELETE",
 }));
 app.use(cookieParser());

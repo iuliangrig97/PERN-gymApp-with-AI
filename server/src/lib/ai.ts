@@ -34,7 +34,7 @@ export async function generateTrainingPlan(profile: UserProfile | Record<string,
 
     try {
         const completion = await openai.chat.completions.create({
-            model: "nvidia/nemotron-3-super-120b-a12b:free",
+            model: "google/gemma-4-31b-it:free",
             messages: [
                 {
                     role: "system",
