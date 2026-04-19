@@ -182,6 +182,9 @@ export default function Onboarding() {
             </div>
           )}
         </div>
+        <div>
+          <p className="text-red-600">{error ? error : "Error"}</p>
+        </div>
       </div>
       ;
     </SignedIn>

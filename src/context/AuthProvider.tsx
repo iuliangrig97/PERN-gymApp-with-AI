@@ -5,6 +5,7 @@ import type { TrainingPlan, UserProfile } from "../types";
 import { api } from "../lib/api";
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [neonUser, setNeoUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const isRefreshingRef = useRef(false);
@@ -19,6 +20,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           setNeoUser(null);
         }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         setNeoUser(null);
       } finally {
