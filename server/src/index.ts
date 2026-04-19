@@ -27,7 +27,7 @@ const generalLimiter = rateLimit({
 
 app.use(cors({
     origin: ["http://localhost:5173",
-        "https://pern-gym-app-with-oil5k53p1-iuliangrig97s-projects.vercel.app"
+        "https://pern-gym-app-with-ai.vercel.app"
     ],
     methods: "GET, POST, PUT, PATCH, DELETE",
 }));
